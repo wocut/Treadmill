@@ -30,5 +30,6 @@ void loop()  {
     fadeAmount = -fadeAmount ; 
   }     
   // wait for 30 milliseconds to see the dimming effect    
-  delay(30);                            
+  delay(30);   
+  delay(30);
 }
