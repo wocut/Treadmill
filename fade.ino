@@ -1,35 +1,55 @@
-/*
- Fade
- 
- This example shows how to fade an LED on pin 9
- using the analogWrite() function.
- 
- This example code is in the public domain.
- */
+// Ultrasonic - Library for HR-SC04 Ultrasonic Ranging Module.
+// GitHub: https://github.com/JRodrigoTech/Ultrasonic-HC-SR04
+// #### LICENSE ####
+// This code is licensed under Creative Commons Share alike 
+// and Attribution by J.Rodrigo ( http://www.jrodrigo.net ).
 
-int led = 9;           // the pin that the LED is attached to
-int brightness = 0;    // how bright the LED is
-int fadeAmount = 5;    // how many points to fade the LED by
+#if ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+#endif
 
-// the setup routine runs once when you press reset:
-void setup()  { 
-  // declare pin 9 to be an output:
-  pinMode(led, OUTPUT);
-} 
+#include "Ultrasonic.h"
 
-// the loop routine runs over and over again forever:
-void loop()  { 
-  // set the brightness of pin 9:
-  analogWrite(led, brightness);    
+Ultrasonic::Ultrasonic(int TP, int EP)
+{
+   pinMode(TP,OUTPUT);
+   pinMode(EP,INPUT);
+   Trig_pin=TP;
+   Echo_pin=EP;
+   Time_out=3000;  // 3000 µs = 50cm // 30000 µs = 5 m 
+}
 
-  // change the brightness for next time through the loop:
-  brightness = brightness + fadeAmount;
+Ultrasonic::Ultrasonic(int TP, int EP, long TO)
+{
+   pinMode(TP,OUTPUT);
+   pinMode(EP,INPUT);
+   Trig_pin=TP;
+   Echo_pin=EP;
+   Time_out=TO;
+}
 
-  // reverse the direction of the fading at the ends of the fade: 
-  if (brightness == 0 || brightness == 255) {
-    fadeAmount = -fadeAmount ; 
-  }     
-  // wait for 30 milliseconds to see the dimming effect    
-  delay(30);   
-  delay(30);
+long Ultrasonic::Timing()
+{
+  digitalWrite(Trig_pin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(Trig_pin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Trig_pin, LOW);
+  duration = pulseIn(Echo_pin,HIGH,Time_out);
+  if ( duration == 0 ) {
+	duration = Time_out; }
+  return duration;
+}
+
+long Ultrasonic::Ranging(int sys)
+{
+  Timing();
+  if (sys) {
+	distance_cm = duration /29 / 2 ;
+	return distance_cm;
+  } else {
+	distance_inc = duration / 74 / 2;
+	return distance_inc; }
 }
