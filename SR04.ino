@@ -38,8 +38,4 @@ void loop() {
   Serial.println("cm");
   delay(100);
 }
---------------------- 
-作者：ling3ye 
-来源：CSDN 
-原文：https://blog.csdn.net/ling3ye/article/details/51407328 
-版权声明：本文为博主原创文章，转载请附上博文链接！
+
