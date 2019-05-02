@@ -1,4 +1,4 @@
-//LingShun LAB
+
  
 #define Trig 2 //引脚Tring 连接 IO D2
 #define Echo 3 //引脚Echo 连接 IO D3 
