@@ -2,14 +2,20 @@
  
 #define Trig 2 //引脚Tring 连接 IO D2
 #define Echo 3 //引脚Echo 连接 IO D3 
+#define Trig2 4 //2号引脚Tring 连接 IO D4
+#define Echo2 5 //2号引脚Echo 连接 IO D5 
  
 float cm; //距离变量
 float temp; // 
+float cm2; //2号距离变量
+float temp2; // 
  
 void setup() {
   Serial.begin(9600);
   pinMode(Trig, OUTPUT);
+  pinMode(Trig2, OUTPUT);
   pinMode(Echo, INPUT);
+  pinMode(Echo2, INPUT);
 }
  
 void loop() {
