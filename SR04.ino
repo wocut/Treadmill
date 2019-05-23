@@ -39,7 +39,9 @@ float cm;
 float cm2=0;
 
 int Filter_Value;
+int FV2;
 int Value;
+int Value2;
 
 void setup() {
 
@@ -56,6 +58,7 @@ pinMode(TrigPin2, OUTPUT);
 pinMode(EchoPin2, INPUT); 
 
 Value = 300;
+Value2=300;
 
 }
 
@@ -77,16 +80,22 @@ delayMicroseconds(10);
 
 digitalWrite(TrigPin, LOW); 
 
-
-
 cm = pulseIn(EchoPin, HIGH) / 58.0; //将回波时间换算成cm 
+Serial.print(cm); 
+Serial.print(","); 
+
 
 //delay(1);
   
-Filter_Value = Filter(cm);       // 获得滤波器输出值
+Filter_Value = Filter(cm,Value);       // 获得滤波器输出值
 Value = Filter_Value;          // 最近一次有效采样的值，该变量为全局变量
+Serial.print(Value); 
+Serial.print(",");
+delay(50);
 
-/*
+
+
+
 digitalWrite(TrigPin2, LOW); //低高低电平发一个短时间脉冲去TrigPin 
 
 delayMicroseconds(2); 
@@ -98,16 +107,20 @@ delayMicroseconds(10);
 digitalWrite(TrigPin2, LOW); 
 
 cm2 = pulseIn(EchoPin2, HIGH) / 58.0;
+
+
+
+
+FV2 = Filter(cm2,Value2);       // 获得滤波器输出值
+Value2 = FV2;          // 最近一次有效采样的值，该变量为全局变量
 Serial.print(cm2); 
 Serial.print(","); 
-*/
-
-Serial.print(cm); 
-Serial.print(","); 
+Serial.println(Value2); 
 
 
-Serial.println(Value); 
-delay(100);
+
+
+
 
 
   if (cm <=35) {  
@@ -142,12 +155,12 @@ Keyboard.releaseAll();
 
 }
 
-  int Filter(int A1){
+  int Filter(int A1,int V1){
    int ag;
    ag=A1;
-    if (A1-Value>10)
+    if (A1-V1>10)
     {
-      return Value+5;
+      return V1+5;
     }
     else
     {
