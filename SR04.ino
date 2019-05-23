@@ -1,83 +1,159 @@
-//1.1 增加一个超声波
-//1.2 
- 
-#define Trig 2 //引脚Tring 连接 IO D2
-#define Echo 3 //引脚Echo 连接 IO D3 
-#define Trig2 4 //2号引脚Tring 连接 IO D4
-#define Echo2 5 //2号引脚Echo 连接 IO D5 
+/*
 
- 
-float cm; //距离变量
-float temp; // 
-float cm2; //2号距离变量
-float temp2; // 
+* 0.1 摇杆可以控制鼠标，但极品飞车只能支持字符
+
+* 0.2 摇杆可以输出 @ B
+
+* 0.3 加上Y轴信号,但不能向下
+
+*   0.31串口打印K
+
+*   0.32 对0.31优化，可以准确输出左右信息
+
+*       Keyborad不能用双引号“”，只能用单引号‘’
+
+* 0.4 加上声波测距
+
+*/
+
+#include "Keyboard.h"
+
+
+
+//const int xAxis = A0;         // joystick X axis
+
+//const int yAxis = A1;         // joystick Y axis
+
+const int TrigPin = 2; 
+
+const int EchoPin = 3; 
+
+
+const int TrigPin2 = 5; 
+
+const int EchoPin2 = 6; 
+
+
+
+float cm; 
+float cm2=0;
+
 int Filter_Value;
- 
+int Value;
+
 void setup() {
-  Serial.begin(9600);
-  pinMode(Trig, OUTPUT);
-  pinMode(Trig2, OUTPUT);
-  pinMode(Echo, INPUT);
-  pinMode(Echo2, INPUT);
-}
- 
-void loop() {
-  //给Trig发送一个低高低的短时间脉冲,触发测距
-  digitalWrite(Trig, LOW); //给Trig发送一个低电平
-  delayMicroseconds(2);    //等待 2微妙
-  digitalWrite(Trig,HIGH); //给Trig发送一个高电平
-  delayMicroseconds(10);    //等待 10微妙
-  digitalWrite(Trig, LOW); //给Trig发送一个低电平
-  
-  temp = float(pulseIn(Echo, HIGH)); //存储回波等待时间,
-  //pulseIn函数会等待引脚变为HIGH,开始计算时间,再等待变为LOW并停止计时
-  //返回脉冲的长度
-  
-  //声速是:340m/1s 换算成 34000cm / 1000000μs => 34 / 1000
-  //因为发送到接收,实际是相同距离走了2回,所以要除以2
-  //距离(厘米)  =  (回波时间 * (34 / 1000)) / 2
-  //简化后的计算公式为 (回波时间 * 17)/ 1000
-  
-  cm = (temp * 17 )/100; //把回波时间换算成cm
- 
-  //Serial.print("Echo =");
-  //Serial.print(temp);//串口输出等待时间的原始数据
-  //Serial.print(" | | Distance = ");
-  
-  
-  
-  
-  Serial.print(cm);//串口输出距离换算成cm的结果
-  Serial.print(",");
-  Filter_Value = Filter();       // 获得滤波器输出值
-  Value = Filter_Value;          // 最近一次有效采样的值，该变量为全局变量
-  Serial.print(Filter_Value); // 串口输出
-  Serial.print(",");
-  delay(10);
-  
-  
-  
-  
-  digitalWrite(Trig2, LOW); //给Trig发送一个低电平
-  delayMicroseconds(2);    //等待 2微妙
-  digitalWrite(Trig2,HIGH); //给Trig发送一个高电平
-  delayMicroseconds(10);    //等待 10微妙
-  digitalWrite(Trig2, LOW); //给Trig发送一个低电平
-  
-  temp2 = float(pulseIn(Echo2, HIGH)); 
-  cm2 = (temp2 * 17 )/100;
-  Serial.println(cm2);
-  //Serial.println("\n");
-  delay(10);
+
+  Keyboard.begin();
+
+Serial.begin(115200); 
+
+pinMode(TrigPin, OUTPUT); 
+
+pinMode(EchoPin, INPUT); 
+
+pinMode(TrigPin2, OUTPUT); 
+
+pinMode(EchoPin2, INPUT); 
+
+Value = 300;
+
 }
 
-    // 限幅滤波法（又称程序判断滤波法）
-    #define FILTER_A 100
-    int Filter(cm) {
-      int NewValue;
-      NewValue = cm;
-      if(((NewValue - Value) > FILTER_A) || ((Value - NewValue) > FILTER_A))
-        return Value;
-      else
-        return NewValue;
+
+
+void loop() {
+
+ //int xReading = analogRead(A0);
+
+ //int yReading = analogRead(A1);
+
+digitalWrite(TrigPin, LOW); //低高低电平发一个短时间脉冲去TrigPin 
+
+delayMicroseconds(2); 
+
+digitalWrite(TrigPin, HIGH); 
+
+delayMicroseconds(10); 
+
+digitalWrite(TrigPin, LOW); 
+
+
+
+cm = pulseIn(EchoPin, HIGH) / 58.0; //将回波时间换算成cm 
+
+//delay(1);
+  
+Filter_Value = Filter(cm);       // 获得滤波器输出值
+Value = Filter_Value;          // 最近一次有效采样的值，该变量为全局变量
+
+/*
+digitalWrite(TrigPin2, LOW); //低高低电平发一个短时间脉冲去TrigPin 
+
+delayMicroseconds(2); 
+
+digitalWrite(TrigPin2, HIGH); 
+
+delayMicroseconds(10); 
+
+digitalWrite(TrigPin2, LOW); 
+
+cm2 = pulseIn(EchoPin2, HIGH) / 58.0;
+Serial.print(cm2); 
+Serial.print(","); 
+*/
+
+Serial.print(cm); 
+Serial.print(","); 
+
+
+Serial.println(Value); 
+delay(100);
+
+
+  if (cm <=35) {  
+
+    Keyboard.releaseAll();
+    //Keyboard.press('a');
+    //Keyboard.press( KEY_UP_ARROW );
+    //delay(50);
+
+    }
+
+ else if (cm >=40 &&  cm<100 )  {   
+    Keyboard.releaseAll();
+    //Keyboard.press('d');
+    //Keyboard.press(KEY_DOWN_ARROW);
+    //delay(50);
+     }
+
+    
+
+ else {
+
+Keyboard.releaseAll();
+
+    }
+    
+    /*
+    
+    
+    */
+    
+
+}
+
+  int Filter(int A1){
+   int ag;
+   ag=A1;
+    if (A1-Value>10)
+    {
+      return Value+5;
+    }
+    else
+    {
+      return A1;
+      //ag=A1*2;
+    }
+    
+    
     }
