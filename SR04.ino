@@ -13,6 +13,7 @@
 *       Keyborad不能用双引号“”，只能用单引号‘’
 
 * 0.4 加上声波测距
+*0.5 准备 一个超声波管前后，另两个管左右
 
 */
 
@@ -123,19 +124,27 @@ Serial.println(Value2);
 
 
 
-  if (cm <=35) {  
+  if (cm <=55) {  
 
     Keyboard.releaseAll();
-    //Keyboard.press('a');
-    //Keyboard.press( KEY_UP_ARROW );
-    //delay(50);
+    //Keyboard.press('u');
+    if ((Value-Value2)>10){
+      Keyboard.releaseAll();
+      Keyboard.press(KEY_LEFT_ARROW);
+    }
+    else if((Value2-Value)>10){
+      Keyboard.releaseAll();
+      Keyboard.press(KEY_RIGHT_ARROW);
+    }
+    Keyboard.press( KEY_UP_ARROW );
+    //delay(50);dddd
 
     }
 
- else if (cm >=40 &&  cm<100 )  {   
+ else if (cm >=60 &&  cm<100 )  {   
     Keyboard.releaseAll();
     //Keyboard.press('d');
-    //Keyboard.press(KEY_DOWN_ARROW);
+    Keyboard.press(KEY_DOWN_ARROW);
     //delay(50);
      }
 
@@ -154,6 +163,8 @@ Keyboard.releaseAll();
     
 
 }
+
+
 
   int Filter(int A1,int V1){
    int ag;
