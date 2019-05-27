@@ -14,6 +14,9 @@
 
 * 0.4 加上声波测距
 *0.5 准备 一个超声波管前后，另两个管左右
+    cm 接前后
+    cm2 转左，
+    cm3 转右
 
 */
 
@@ -35,10 +38,10 @@ const int TrigPin2 = 5;
 const int EchoPin2 = 6; 
 
 
-const int TrigPin2 = 9; 
+const int TrigPin3 = 9; 
 
-const int EchoPin2 = 10; 
-
+const int EchoPin3 = 10; 
+//
 
 
 float cm; 
@@ -91,158 +94,76 @@ void loop() {
  //-------------------------------VVVVVVVVV---------------------------
 
 digitalWrite(TrigPin, LOW); //低高低电平发一个短时间脉冲去TrigPin 
-
 delayMicroseconds(2); 
-
 digitalWrite(TrigPin, HIGH); 
-
 delayMicroseconds(10); 
-
 digitalWrite(TrigPin, LOW); 
-
 cm = pulseIn(EchoPin, HIGH) / 58.0; //将回波时间换算成cm 
-Serial.print(cm); 
-Serial.print(","); 
-
-
-//delay(1);
-  
 Filter_Value = Filter(cm,Value);       // 获得滤波器输出值
 Value = Filter_Value;          // 最近一次有效采样的值，该变量为全局变量
+Serial.print(cm); 
+Serial.print(","); 
 Serial.print(Value); 
 Serial.print(",");
-delay(50);
-
-
-
+//delay(50);
 //---------------------------------------------2-----------------------------
 //----------------vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv--------------------
 
 digitalWrite(TrigPin2, LOW); //低高低电平发一个短时间脉冲去TrigPin 
-
 delayMicroseconds(2); 
-
 digitalWrite(TrigPin2, HIGH); 
-
 delayMicroseconds(10); 
-
 digitalWrite(TrigPin2, LOW); 
-
 cm2 = pulseIn(EchoPin2, HIGH) / 58.0;
-
-
-
-
 FV2 = Filter(cm2,Value2);       // 获得滤波器输出值
 Value2 = FV2;          // 最近一次有效采样的值，该变量为全局变量
 Serial.print(cm2); 
 Serial.print(","); 
-Serial.println(Value2); 
-
-digitalWrite(TrigPin2, LOW); //低高低电平发一个短时间脉冲去TrigPin 
-
-delayMicroseconds(2); 
-
-digitalWrite(TrigPin2, HIGH); 
-
-delayMicroseconds(10); 
-
-digitalWrite(TrigPin2, LOW); 
-
-cm2 = pulseIn(EchoPin2, HIGH) / 58.0;
-
-
-
-
-FV2 = Filter(cm2,Value2);       // 获得滤波器输出值
-Value2 = FV2;          // 最近一次有效采样的值，该变量为全局变量
-Serial.print(cm2); 
+Serial.print(Value2); 
 Serial.print(","); 
-Serial.println(Value2); 
-
-
 //---------------------------------------------3-----------------------------
 //----------------vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv--------------------
 
 digitalWrite(TrigPin3, LOW); //低高低电平发一个短时间脉冲去TrigPin 
-
 delayMicroseconds(2); 
-
 digitalWrite(TrigPin3, HIGH); 
-
 delayMicroseconds(10); 
-
 digitalWrite(TrigPin3, LOW); 
-
 cm3 = pulseIn(EchoPin3, HIGH) / 58.0;
-
-
-
-
 FV3 = Filter(cm3,Value3);       // 获得滤波器输出值
 Value3 = FV3;          // 最近一次有效采样的值，该变量为全局变量
 Serial.print(cm3); 
 Serial.print(","); 
 Serial.println(Value3); 
 
-digitalWrite(TrigPin3, LOW); //低高低电平发一个短时间脉冲去TrigPin 
+//-----------------------------------------------
 
-delayMicroseconds(2); 
-
-digitalWrite(TrigPin3, HIGH); 
-
-delayMicroseconds(10); 
-
-digitalWrite(TrigPin3, LOW); 
-
-cm3 = pulseIn(EchoPin3, HIGH) / 58.0;
-
-
-
-
-FV3 = Filter(cm3,Value3);       // 获得滤波器输出值
-Value3 = FV3;          // 最近一次有效采样的值，该变量为全局变量
-Serial.print(cm3); 
-Serial.print(","); 
-Serial.println(Value3); 
-
-
-
-
-
-
-
-  if (cm <=55) {  
+  if (cm <=55  &&  cm>20) {  
 
     Keyboard.releaseAll();
     //Keyboard.press('u');
-    
-    
-    
-/*
-    if ((Value-Value2)>10){
-      Keyboard.releaseAll();
-      Keyboard.press(KEY_LEFT_ARROW);
-    }
-    else if((Value2-Value)>10){
-      Keyboard.releaseAll();
-      Keyboard.press(KEY_RIGHT_ARROW);
-    }
-    
-*/
-
 
     Keyboard.press( KEY_UP_ARROW );
     //delay(50);dddd
+     if (cm2 <=45  &&  cm2>15){
+        Keyboard.release(KEY_RIGHT_ARROW);
+        Keyboard.press(KEY_LEFT_ARROW);
+        //Keyboard.press('l');
+      }
+     if(cm3 <=45  &&  cm3>15){
+        Keyboard.release(KEY_LEFT_ARROW);
+        Keyboard.press(KEY_RIGHT_ARROW);
+        //Keyboard.press('r');
+      }
 
     }
 
- else if (cm >=60 &&  cm<100 )  {   
-    Keyboard.releaseAll();
-    //Keyboard.press('d');
-    Keyboard.press(KEY_DOWN_ARROW);
-    //delay(50);
-     }
+   else if (cm >=60 &&  cm<100 )  {   
+      Keyboard.releaseAll();
+      //Keyboard.press('d');
+      Keyboard.press(KEY_DOWN_ARROW);
+      //delay(50);
+       }
 
     
 
