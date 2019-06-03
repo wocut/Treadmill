@@ -40,14 +40,16 @@ const int EchoPin2 = 6;
 
 const int TrigPin3 = 9; 
 
-const int EchoPin3 = 10; 
+const int EchoPin3 = 8; 
 //
 
-
-float cm; 
-float cm2=0;
-float cm3=0;
-
+int running=0;
+int cm=0; 
+int cm2=0;
+int cm3=0;
+#include <Servo.h> 
+Servo myservo;
+Servo myservo2;
 
 int Filter_Value;
 int FV2;
@@ -61,6 +63,9 @@ void setup() {
   Keyboard.begin();
 
 Serial.begin(9600); 
+  myservo.attach(11); 
+  myservo.attach(10);
+  
 
 pinMode(TrigPin, OUTPUT); 
 
@@ -145,6 +150,7 @@ Serial.println(Value3);
 
     Keyboard.press( KEY_UP_ARROW );
     //delay(50);dddd
+    Runnow();
      if (cm2 <=45  &&  cm2>15){
         Keyboard.release(KEY_RIGHT_ARROW);
         Keyboard.press(KEY_LEFT_ARROW);
@@ -170,6 +176,7 @@ Serial.println(Value3);
  else {
 
     Keyboard.releaseAll();
+    Stopnow();
 
     }
     
@@ -198,3 +205,21 @@ Serial.println(Value3);
     
     
     }
+    
+  int Runnow(){
+    while (running=0){
+      myservo.write(0);
+      delay(50);
+      myservo.write(180);
+      delay(50);
+      runing=1;
+    }
+  }
+  int Stopnow(){
+    while (running!=0){
+    myservo2.write(0);
+    delay(50);
+    myservo2.write(180);
+    delay(50);
+    }
+  }
