@@ -59,6 +59,8 @@ int Value;
 int Value2;
 int Value3;
 
+unsigned long time,time2,pas; 
+
 void setup() {
 
   Keyboard.begin();
@@ -210,23 +212,33 @@ Serial.println(Value3);
     }
     
   int Runnow(){
-    while (running==0){
-      Serial.print("Runnow");
-      myservo.write(0);
-      delay(100);
-      myservo.write(30);
-      delay(100);
-      running=1;
+    while (running==0 ){
+      time = millis();
+      pas=abs(time2-time);
+        while(pas>10)
+        {
+        Serial.print("Runnow");
+        myservo.write(0);
+        delay(100);
+        myservo.write(30);
+        delay(100);
+        running=1;
+        }
     }
   }
   
   int Stopnow(){
     while (running){
+    time2 = millis();
+    pas=abs(time2-time);
+      while(pas>10)
+      {
       Serial.print("Stopnow");
-    myservo2.write(0);
-    delay(100);
-    myservo2.write(30);
-    delay(100);
-    running=0;
+      myservo2.write(0);
+      delay(100);
+      myservo2.write(30);
+      delay(100);
+      running=0;
+      }
     }
   }
