@@ -17,7 +17,7 @@
     cm 接前后
     cm2 转左，
     cm3 转右
- *1.0 加上两上舵机，
+* sr04_n_05  加上两上舵机，
 
 */
 
@@ -44,7 +44,7 @@ const int TrigPin3 = 9;
 const int EchoPin3 = 8; 
 //
 
-int running=0;
+int running;
 int cm=0; 
 int cm2=0;
 int cm3=0;
@@ -52,7 +52,7 @@ int cm3=0;
 Servo myservo;
 Servo myservo2;
 
-int Filter_Value;
+int FV;
 int FV2;
 int FV3;
 int Value;
@@ -62,10 +62,11 @@ int Value3;
 void setup() {
 
   Keyboard.begin();
+  running=0;
 
 Serial.begin(9600); 
-  myservo.attach(11); 
-  myservo.attach(10);
+  myservo.attach(10); 
+  myservo2.attach(11);
   
 
 pinMode(TrigPin, OUTPUT); 
@@ -105,8 +106,8 @@ digitalWrite(TrigPin, HIGH);
 delayMicroseconds(10); 
 digitalWrite(TrigPin, LOW); 
 cm = pulseIn(EchoPin, HIGH) / 58.0; //将回波时间换算成cm 
-Filter_Value = Filter(cm,Value);       // 获得滤波器输出值
-Value = Filter_Value;          // 最近一次有效采样的值，该变量为全局变量
+FV = Filter(cm,Value);       // 获得滤波器输出值
+Value = FV;          // 最近一次有效采样的值，该变量为全局变量
 Serial.print(cm); 
 Serial.print(","); 
 Serial.print(Value); 
@@ -144,31 +145,32 @@ Serial.println(Value3);
 
 //-----------------------------------------------
 
-  if (cm <=55  &&  cm>20) {  
+  if (FV <=55  &&  FV>20) {  
 
     Keyboard.releaseAll();
-    //Keyboard.press('u');
+    Serial.print("u");
 
     Keyboard.press( KEY_UP_ARROW );
-    //delay(50);dddd
+    //delay(50);
     Runnow();
      if (cm2 <=45  &&  cm2>15){
         Keyboard.release(KEY_RIGHT_ARROW);
         Keyboard.press(KEY_LEFT_ARROW);
-        //Keyboard.press('l');
+        Serial.print("L");
       }
      if(cm3 <=45  &&  cm3>15){
         Keyboard.release(KEY_LEFT_ARROW);
         Keyboard.press(KEY_RIGHT_ARROW);
-        //Keyboard.press('r');
+        Serial.print("r");
       }
 
     }
 
-   else if (cm >=60 &&  cm<100 )  {   
+   else if (FV >=60 &&  FV<100 )  {   
       Keyboard.releaseAll();
-      //Keyboard.press('d');
+      Serial.print("d");
       Keyboard.press(KEY_DOWN_ARROW);
+      Stopnow();
       //delay(50);
        }
 
@@ -177,7 +179,7 @@ Serial.println(Value3);
  else {
 
     Keyboard.releaseAll();
-    Stopnow();
+    
 
     }
     
@@ -194,9 +196,9 @@ Serial.println(Value3);
   int Filter(int A1,int V1){
     int ag;
     ag=A1;
-    if (A1-V1>10)
+    if (A1-V1>2)
       {
-        return V1+5;
+        return V1+1;
       }
     else
       {
@@ -208,19 +210,23 @@ Serial.println(Value3);
     }
     
   int Runnow(){
-    while (running=0){
+    while (running==0){
+      Serial.print("Runnow");
       myservo.write(0);
-      delay(50);
-      myservo.write(180);
-      delay(50);
-      runing=1;
+      delay(100);
+      myservo.write(30);
+      delay(100);
+      running=1;
     }
   }
+  
   int Stopnow(){
-    while (running!=0){
+    while (running){
+      Serial.print("Stopnow");
     myservo2.write(0);
-    delay(50);
-    myservo2.write(180);
-    delay(50);
+    delay(100);
+    myservo2.write(30);
+    delay(100);
+    running=0;
     }
   }
