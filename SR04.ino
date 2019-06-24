@@ -126,12 +126,12 @@ digitalWrite(TrigPin2, HIGH);
 delayMicroseconds(10); 
 digitalWrite(TrigPin2, LOW); 
 cm2 = pulseIn(EchoPin2, HIGH) / 58.0;
-FV2 = Filter(cm2,Value2);       // 获得滤波器输出值
-Value2 = FV2;          // 最近一次有效采样的值，该变量为全局变量
-Serial.print(cm2); 
-Serial.print(","); 
-Serial.print(Value2); 
-Serial.print(","); 
+//FV2 = Filter(cm2,Value2);       // 获得滤波器输出值
+//Value2 = FV2;          // 最近一次有效采样的值，该变量为全局变量
+//Serial.print(cm2); 
+//Serial.print(","); 
+//Serial.print(Value2); 
+//Serial.print(","); 
 //---------------------------------------------3-----------------------------
 //----------------vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv--------------------
 
@@ -141,11 +141,11 @@ digitalWrite(TrigPin3, HIGH);
 delayMicroseconds(10); 
 digitalWrite(TrigPin3, LOW); 
 cm3 = pulseIn(EchoPin3, HIGH) / 58.0;
-FV3 = Filter(cm3,Value3);       // 获得滤波器输出值
-Value3 = FV3;          // 最近一次有效采样的值，该变量为全局变量
-Serial.print(cm3); 
-Serial.print(","); 
-Serial.println(Value3); 
+//FV3 = Filter(cm3,Value3);       // 获得滤波器输出值
+//Value3 = FV3;          // 最近一次有效采样的值，该变量为全局变量
+//Serial.print(cm3); 
+//Serial.print(","); 
+//Serial.println(Value3); 
 
 //-----------------------------------------------
 
@@ -155,7 +155,7 @@ Serial.println(Value3);
     Serial.print("u");
 
     Keyboard.press( KEY_UP_ARROW );
-    //delay(50);
+    
     Runnow();
      if (cm2 <=45  &&  cm2>15){
         Keyboard.release(KEY_RIGHT_ARROW);
@@ -187,10 +187,10 @@ Serial.println(Value3);
 
     }
     
-    /*
+   
     
     
-    */
+    
     
 
 }
@@ -219,7 +219,7 @@ Serial.println(Value3);
       pas=abs(time2-time);
         while(pas>10)
         {
-        Serial.print("Runnow");
+        Serial.print(running);
         myservo.write(0);
         delay(100);
         myservo.write(30);
@@ -235,7 +235,7 @@ Serial.println(Value3);
     pas=abs(time2-time);
       while(pas>10)
       {
-      Serial.print("Stopnow");
+      Serial.print(running);
       myservo2.write(0);
       delay(100);
       myservo2.write(30);
