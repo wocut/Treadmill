@@ -14,10 +14,12 @@
 
 * 0.4 加上声波测距
 *0.5 准备 一个超声波管前后，另两个管左右
-    cm 接前后
-    cm2 转左，
-    cm3 转右
+    cm 接前后 TrigPin = 2;  EchoPin = 3; 
+    cm2 转左，TrigPin = 5;  EchoPin = 6; 
+    cm3 转右 TrigPin = 9;  EchoPin = 8; 
 * sr04_n_05  加上两上舵机，
+    myservo (10); 
+    myservo2 (11);
 
 */
 
